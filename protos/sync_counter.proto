@@ -14,3 +14,13 @@ service SyncCounter {
     rpc Subtract (Empty) returns (Empty) {}
     rpc Get (Empty) returns (GetResponse) {}
 }
+
+
+// // most of the request/responses will be empty
+// message Empty { }
+
+// message GetResponse{
+//     // the current value of the counter
+//     int64 value = 1;
+// }
+

@@ -16,6 +16,7 @@ namespace crdt_counter
     class LocalCounter : Counter
     {
     public:
+        LocalCounter() : value_(0) { }
         void Add() override
         {
             value_.fetch_add(1, std::memory_order_seq_cst);
