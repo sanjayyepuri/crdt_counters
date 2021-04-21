@@ -1,0 +1,16 @@
+syntax = "proto3";
+package crdt_counter;
+
+import "protos/messages.proto";
+
+/**
+* A counter that will be shared by all clients
+*
+* In order to increment and read the counter the client will send an rpc
+* message to a central counter.
+*/
+service SyncCounter {
+    rpc Add (Empty) returns (Empty) {}
+    rpc Subtract (Empty) returns (Empty) {}
+    rpc Get (Empty) returns (GetResponse) {}
+}

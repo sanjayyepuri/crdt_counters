@@ -1,0 +1,10 @@
+syntax = "proto3";
+package crdt_counter;
+
+// most of the request/responses will be empty
+message Empty { }
+
+message GetResponse{
+    // the current value of the counter
+    int64 value = 1;
+}
