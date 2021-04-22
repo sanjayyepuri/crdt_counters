@@ -1,5 +1,5 @@
 cc_binary(
-    name = "sync_counter",
+    name = "server",
     srcs = ["main.cc"],
     deps = [
         "//protos:counter_cc_grpc",
