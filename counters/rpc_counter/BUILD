@@ -3,7 +3,7 @@ cc_binary(
     srcs = ["main.cc"],
     deps = [
         "//protos:counter_cc_grpc",
-        "//counters:counters",
-        "@com_github_grpc_grpc//:grpc++"
+        "//counters/shared:main",
+        "@com_github_grpc_grpc//:grpc++",
     ]
 )

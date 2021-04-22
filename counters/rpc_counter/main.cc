@@ -5,19 +5,14 @@
 #include "protos/messages.grpc.pb.h"
 #include "protos/sync_counter.grpc.pb.h"
 
-#include "counters/counter.h"
-#include "counters/server.h"
+#include "counters/shared/counter.h"
 
-;
 using grpc::Status;
 using grpc::ServerContext;
 
 using crdt_counter::Empty;
 using crdt_counter::GetResponse;
 using crdt_counter::SyncCounter;
-
-using crdt_counter::Counter;
-using crdt_counter::LocalCounter;
 
 class SyncCounterService final : public SyncCounter::Service
 {
@@ -45,11 +40,13 @@ public:
     }
 
 private:
-    LocalCounter counter_;
+    crdt::LocalCounter counter_;
 };
 
-int main()
+int main(int argc, char **argv)
 {
-    crdt_counter::RunServer<SyncCounterService>();
+    crdt::ServerArgs args;
+    crdt::ParseArgs(argc, argv, args);
+    crdt::RunServer<SyncCounterService>(args);
     return 0;
 }
