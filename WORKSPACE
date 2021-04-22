@@ -42,6 +42,36 @@ http_archive(
     urls = ["https://github.com/rules-proto-grpc/rules_proto_grpc/archive/3.1.1.tar.gz"],
 )
 
+_py_configure = """
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    ./configure --prefix=$(pwd)/bazel_install --with-openssl=$(brew --prefix openssl)
+else
+    ./configure --prefix=$(pwd)/bazel_install
+fi
+"""
+
+http_archive(
+    name = "python_interpreter",
+    urls = ["https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz"],
+    # sha256 = "dfab5ec723c218082fe3d5d7ae17ecbdebffa9a1aea4d64aa3a2ecdd2e795864",
+    strip_prefix = "Python-3.8.3",
+    patch_cmds = [
+        "mkdir $(pwd)/bazel_install",
+        _py_configure,
+        "make",
+        "make install",
+        "ln -s bazel_install/bin/python3 python_bin",
+    ],
+    build_file_content = """
+exports_files(["python_bin"])
+filegroup(
+    name = "files",
+    srcs = glob(["bazel_install/**"], exclude = ["**/* *"]),
+    visibility = ["//visibility:public"],
+)
+""",
+)
+
 load("@rules_proto_grpc//:repositories.bzl", "rules_proto_grpc_toolchains", "rules_proto_grpc_repos")
 rules_proto_grpc_toolchains()
 rules_proto_grpc_repos()
@@ -65,9 +95,13 @@ load("@rules_python//python:pip.bzl", "pip_install")
 pip_install(
     name = "rules_proto_grpc_py3_deps",
     requirements = "@rules_proto_grpc//python:requirements.txt",
+    # python_interpreter_target = "@python_interpreter//:python_bin",
 )
 
 pip_install(
     name = "py_deps",
     requirements = "//:requirements.txt",
+    # python_interpreter_target = "@python_interpreter//:python_bin",
 )
+
+register_toolchains("//:py_toolchain")
